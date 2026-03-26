@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shahed Ahmed Omi — Flutter Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Epilogue:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green:       #1D9E75;
+    --green-dark:  #085041;
+    --green-light: #E1F5EE;
+    --green-mid:   #0F6E56;
+    --bg:          #0a0f0d;
+    --bg2:         #111a16;
+    --bg3:         #162019;
+    --card:        #1a2820;
+    --border:      rgba(29,158,117,0.18);
+    --text:        #e8f5f0;
+    --muted:       #7aaa96;
+    --white:       #ffffff;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Epilogue', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 10px; height: 10px;
+    background: var(--green);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease;
+    transform: translate(-50%,-50%);
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1.5px solid rgba(29,158,117,0.5);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.35s ease, width 0.2s, height 0.2s;
+    transform: translate(-50%,-50%);
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 5%;
+    background: rgba(10,15,13,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 1.1rem;
+    color: var(--green);
+    letter-spacing: 1px;
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.82rem; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--green); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    padding: 8rem 5% 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(29,158,117,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(29,158,117,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+  .hero-glow {
+    position: absolute;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(29,158,117,0.12) 0%, transparent 70%);
+    top: 10%; right: 5%;
+    pointer-events: none;
+    animation: pulse 4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.7; }
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 750px; }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(29,158,117,0.12);
+    border: 1px solid rgba(29,158,117,0.3);
+    color: var(--green);
+    font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase;
+    padding: 6px 16px; border-radius: 50px;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: blink 1.5s ease-in-out infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3rem, 7vw, 6rem);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -2px;
+    color: var(--white);
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+  .hero h1 span { color: var(--green); }
+  .hero-sub {
+    font-size: 1.05rem; color: var(--muted);
+    margin: 1.5rem 0 2.5rem;
+    line-height: 1.8; max-width: 520px;
+    font-weight: 300;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+  .hero-btns {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+  .btn-primary {
+    background: var(--green);
+    color: #fff;
+    padding: 0.85rem 2rem;
+    border-radius: 50px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 600; font-size: 0.88rem;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary:hover { background: var(--green-mid); transform: translateY(-2px); }
+  .btn-outline {
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    padding: 0.85rem 2rem;
+    border-radius: 50px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 600; font-size: 0.88rem;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s, transform 0.2s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-outline:hover { border-color: var(--green); color: var(--green); transform: translateY(-2px); }
+
+  .hero-scroll {
+    position: absolute; bottom: 2.5rem; left: 5%;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted);
+    animation: fadeUp 0.6s 0.5s ease both;
+  }
+  .scroll-line {
+    width: 40px; height: 1px;
+    background: var(--green);
+    animation: expandW 1.5s 1s ease both;
+  }
+  @keyframes expandW { from{width:0} to{width:40px} }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform: translateY(24px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 5%;
+    display: flex; justify-content: center; gap: 4rem; flex-wrap: wrap;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.2rem; font-weight: 800;
+    color: var(--green); display: block;
+  }
+  .stat-label {
+    font-size: 0.72rem; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--muted);
+  }
+
+  /* SECTIONS */
+  section { padding: 6rem 5%; }
+  .section-tag {
+    font-size: 0.72rem; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--green); margin-bottom: 0.8rem;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-tag::before {
+    content: '';
+    width: 24px; height: 1px; background: var(--green);
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800; color: var(--white);
+    letter-spacing: -1px; line-height: 1.1;
+    margin-bottom: 3rem;
+  }
+
+  /* ABOUT */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem; align-items: center;
+  }
+  .about-text p {
+    font-size: 1rem; color: var(--muted);
+    line-height: 1.9; margin-bottom: 1.2rem;
+    font-weight: 300;
+  }
+  .about-details {
+    display: flex; flex-direction: column; gap: 1rem;
+  }
+  .detail-item {
+    display: flex; align-items: flex-start; gap: 1rem;
+    padding: 1.2rem 1.4rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .detail-item:hover { border-color: var(--green); transform: translateX(4px); }
+  .detail-icon {
+    width: 38px; height: 38px; border-radius: 8px;
+    background: rgba(29,158,117,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; flex-shrink: 0;
+  }
+  .detail-info { flex: 1; }
+  .detail-label { font-size: 0.72rem; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+  .detail-value { font-size: 0.92rem; color: var(--text); font-weight: 500; margin-top: 2px; }
+
+  /* SKILLS */
+  #skills { background: var(--bg2); }
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  .skill-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.8rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .skill-card:hover { border-color: var(--green); transform: translateY(-4px); }
+  .skill-card-icon {
+    font-size: 1.8rem; margin-bottom: 1rem;
+  }
+  .skill-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem; font-weight: 700;
+    color: var(--white); margin-bottom: 1rem;
+  }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .skill-tag {
+    font-size: 0.75rem;
+    padding: 4px 12px;
+    border-radius: 50px;
+    background: rgba(29,158,117,0.1);
+    border: 1px solid rgba(29,158,117,0.2);
+    color: var(--green);
+  }
+
+  /* EDUCATION */
+  .edu-timeline { display: flex; flex-direction: column; gap: 1.5rem; max-width: 700px; }
+  .edu-card {
+    display: grid; grid-template-columns: auto 1fr;
+    gap: 1.5rem; align-items: start;
+  }
+  .edu-dot-col { display: flex; flex-direction: column; align-items: center; padding-top: 4px; }
+  .edu-dot {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--green); border: 3px solid var(--bg);
+    box-shadow: 0 0 0 2px var(--green);
+    flex-shrink: 0;
+  }
+  .edu-line { width: 2px; flex: 1; background: var(--border); margin-top: 6px; min-height: 40px; }
+  .edu-body {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    transition: border-color 0.2s;
+  }
+  .edu-body:hover { border-color: var(--green); }
+  .edu-year {
+    font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--green); margin-bottom: 6px;
+  }
+  .edu-degree {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.05rem; font-weight: 700;
+    color: var(--white); margin-bottom: 4px;
+  }
+  .edu-school { font-size: 0.88rem; color: var(--muted); margin-bottom: 10px; }
+  .gpa-badge {
+    display: inline-block;
+    background: rgba(29,158,117,0.15);
+    border: 1px solid rgba(29,158,117,0.3);
+    color: var(--green);
+    font-size: 0.78rem; font-weight: 600;
+    padding: 4px 14px; border-radius: 50px;
+  }
+
+  /* PROJECTS */
+  #projects { background: var(--bg2); }
+  .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+  .project-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: border-color 0.2s, transform 0.2s;
+    display: flex; flex-direction: column;
+    position: relative; overflow: hidden;
+  }
+  .project-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--green), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .project-card:hover { border-color: var(--green); transform: translateY(-6px); }
+  .project-card:hover::before { opacity: 1; }
+  .project-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+  .project-icon { font-size: 2rem; }
+  .project-status {
+    font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase;
+    padding: 4px 12px; border-radius: 50px;
+    background: rgba(29,158,117,0.12);
+    color: var(--green); border: 1px solid rgba(29,158,117,0.2);
+  }
+  .project-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem; font-weight: 700;
+    color: var(--white); margin-bottom: 0.8rem;
+  }
+  .project-desc {
+    font-size: 0.88rem; color: var(--muted);
+    line-height: 1.8; flex: 1; margin-bottom: 1.5rem;
+    font-weight: 300;
+  }
+  .project-tech { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tech-tag {
+    font-size: 0.72rem;
+    padding: 3px 10px; border-radius: 4px;
+    background: rgba(29,158,117,0.08);
+    color: var(--green);
+    border: 1px solid rgba(29,158,117,0.15);
+  }
+
+  /* CONTACT */
+  .contact-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 4rem; align-items: start;
+  }
+  .contact-info p {
+    font-size: 1rem; color: var(--muted);
+    line-height: 1.8; font-weight: 300; margin-bottom: 2rem;
+  }
+  .contact-links { display: flex; flex-direction: column; gap: 1rem; }
+  .contact-link {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1rem 1.2rem;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    text-decoration: none; color: var(--text);
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .contact-link:hover { border-color: var(--green); transform: translateX(4px); color: var(--green); }
+  .contact-link-icon {
+    width: 38px; height: 38px; border-radius: 8px;
+    background: rgba(29,158,117,0.12);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+  }
+  .contact-link-text { font-size: 0.9rem; }
+  .contact-link-label { font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+
+  /* CONTACT FORM SIDE */
+  .contact-form-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2.5rem;
+  }
+  .contact-form-box h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.3rem; font-weight: 700;
+    color: var(--white); margin-bottom: 1.5rem;
+  }
+  .form-group { margin-bottom: 1.2rem; }
+  .form-group label {
+    display: block; font-size: 0.75rem;
+    letter-spacing: 1px; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 6px;
+  }
+  .form-group input, .form-group textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    color: var(--text);
+    font-family: 'Epilogue', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: none;
+  }
+  .form-group input:focus, .form-group textarea:focus { border-color: var(--green); }
+  .form-submit {
+    width: 100%;
+    background: var(--green);
+    color: #fff;
+    border: none; cursor: pointer;
+    padding: 0.9rem;
+    border-radius: 10px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700; font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .form-submit:hover { background: var(--green-mid); transform: translateY(-2px); }
+
+  /* FOOTER */
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    padding: 2rem 5%;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .footer-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; color: var(--green); font-size: 1rem;
+  }
+  .footer-text { font-size: 0.8rem; color: var(--muted); }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .stats-bar { gap: 2rem; }
+    nav .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <a class="nav-logo" href="#">SAO</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Available for opportunities</div>
+    <h1>Mollah<br><span>Shahed</span><br>Ahmed Omi</h1>
+    <p class="hero-sub">Flutter Developer from Khulna, Bangladesh. Building beautiful, performant mobile applications with Flutter & Dart. Passionate about clean UI and smooth user experiences.</p>
+    <div class="hero-btns">
+      <a href="#projects" class="btn-primary">View Projects ↓</a>
+      <a href="#contact" class="btn-outline">Get In Touch →</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    Scroll to explore
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat">
+    <span class="stat-num">5.00</span>
+    <span class="stat-label">HSC GPA</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num">4.83</span>
+    <span class="stat-label">SSC GPA</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num">1+</span>
+    <span class="stat-label">App Built</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num">2+</span>
+    <span class="stat-label">Yrs Learning</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-tag">Who I am</div>
+  <h2 class="section-title">About Me</h2>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>I'm a passionate Flutter developer from Khulna, Bangladesh with a strong academic background. I love creating mobile applications that are both visually appealing and highly functional.</p>
+      <p>Currently expanding my skills in Flutter and Dart, with a focus on building real-world applications. My latest project — an Ammunition Shop App — reflects my ability to bring ideas to life through code.</p>
+      <p>I'm a quick learner with a strong eye for detail, always looking for opportunities to grow and contribute to meaningful projects.</p>
+    </div>
+    <div class="about-details">
+      <div class="detail-item">
+        <div class="detail-icon">📍</div>
+        <div class="detail-info">
+          <div class="detail-label">Location</div>
+          <div class="detail-value">12/13 Khan Jahan Ali Road, Khulna, Bangladesh</div>
+        </div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-icon">📱</div>
+        <div class="detail-info">
+          <div class="detail-label">Phone</div>
+          <div class="detail-value">01726156318</div>
+        </div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-icon">✉️</div>
+        <div class="detail-info">
+          <div class="detail-label">Email</div>
+          <div class="detail-value">shahedomi16@gmail.com</div>
+        </div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-icon">💻</div>
+        <div class="detail-info">
+          <div class="detail-label">GitHub</div>
+          <div class="detail-value">github.com/ShahedAhmed894</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-tag">What I know</div>
+  <h2 class="section-title">Skills</h2>
+  <div class="skills-grid">
+    <div class="skill-card">
+      <div class="skill-card-icon">📱</div>
+      <h3>Mobile Development</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">Flutter</span>
+        <span class="skill-tag">Dart</span>
+        <span class="skill-tag">Android</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-icon">🎨</div>
+      <h3>UI / UX Design</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">Material Design</span>
+        <span class="skill-tag">Responsive UI</span>
+        <span class="skill-tag">Widgets</span>
+        <span class="skill-tag">Animations</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-icon">🔧</div>
+      <h3>Tools & Platforms</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">Git</span>
+        <span class="skill-tag">GitHub</span>
+        <span class="skill-tag">VS Code</span>
+        <span class="skill-tag">Android Studio</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-icon">🔌</div>
+      <h3>Backend & APIs</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">REST API</span>
+        <span class="skill-tag">Firebase</span>
+        <span class="skill-tag">State Management</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-icon">🧠</div>
+      <h3>Soft Skills</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">Problem Solving</span>
+        <span class="skill-tag">Quick Learner</span>
+        <span class="skill-tag">Team Player</span>
+        <span class="skill-tag">Detail-Oriented</span>
+      </div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-card-icon">🌐</div>
+      <h3>Languages</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">Bengali — Native</span>
+        <span class="skill-tag">English — Intermediate</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="section-tag">My background</div>
+  <h2 class="section-title">Education</h2>
+  <div class="edu-timeline">
+    <div class="edu-card">
+      <div class="edu-dot-col">
+        <div class="edu-dot"></div>
+        <div class="edu-line"></div>
+      </div>
+      <div class="edu-body">
+        <div class="edu-year">2021</div>
+        <div class="edu-degree">Higher Secondary Certificate (HSC)</div>
+        <div class="edu-school">Govt. Bangabandhu College, Khulna</div>
+        <span class="gpa-badge">GPA 5.00 / 5.00</span>
+      </div>
+    </div>
+    <div class="edu-card">
+      <div class="edu-dot-col">
+        <div class="edu-dot"></div>
+      </div>
+      <div class="edu-body">
+        <div class="edu-year">2019</div>
+        <div class="edu-degree">Secondary School Certificate (SSC)</div>
+        <div class="edu-school">Khulna Zilla School, Khulna</div>
+        <span class="gpa-badge">GPA 4.83 / 5.00</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-tag">What I've built</div>
+  <h2 class="section-title">Projects</h2>
+  <div class="projects-grid">
+    <div class="project-card">
+      <div class="project-header">
+        <div class="project-icon">🔫</div>
+        <span class="project-status">Completed</span>
+      </div>
+      <div class="project-name">Ammunition Shop App</div>
+      <p class="project-desc">A Flutter-based mobile application designed to manage and display products for an ammunition shop. Features a clean user interface with product listings, shop management functionality, and a smooth user experience built entirely with Flutter and Dart.</p>
+      <div class="project-tech">
+        <span class="tech-tag">Flutter</span>
+        <span class="tech-tag">Dart</span>
+        <span class="tech-tag">Material UI</span>
+        <span class="tech-tag">Mobile App</span>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-header">
+        <div class="project-icon">🚀</div>
+        <span class="project-status">Coming Soon</span>
+      </div>
+      <div class="project-name">More Projects Coming</div>
+      <p class="project-desc">Currently working on new Flutter projects to expand my portfolio. Stay tuned for exciting new mobile applications with advanced features and beautiful UI designs.</p>
+      <div class="project-tech">
+        <span class="tech-tag">Flutter</span>
+        <span class="tech-tag">Firebase</span>
+        <span class="tech-tag">REST API</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-tag">Let's connect</div>
+  <h2 class="section-title">Get In Touch</h2>
+  <div class="contact-grid">
+    <div class="contact-info">
+      <p>I'm currently open to new opportunities — whether it's a job, freelance project, or just a chat about Flutter development. Feel free to reach out!</p>
+      <div class="contact-links">
+        <a href="mailto:shahedomi16@gmail.com" class="contact-link">
+          <div class="contact-link-icon">✉️</div>
+          <div>
+            <div class="contact-link-label">Email</div>
+            <div class="contact-link-text">shahedomi16@gmail.com</div>
+          </div>
+        </a>
+        <a href="tel:01726156318" class="contact-link">
+          <div class="contact-link-icon">📞</div>
+          <div>
+            <div class="contact-link-label">Phone</div>
+            <div class="contact-link-text">01726156318</div>
+          </div>
+        </a>
+        <a href="https://github.com/ShahedAhmed894" target="_blank" class="contact-link">
+          <div class="contact-link-icon">💻</div>
+          <div>
+            <div class="contact-link-label">GitHub</div>
+            <div class="contact-link-text">github.com/ShahedAhmed894</div>
+          </div>
+        </a>
+        <a href="#" class="contact-link">
+          <div class="contact-link-icon">📍</div>
+          <div>
+            <div class="contact-link-label">Location</div>
+            <div class="contact-link-text">Khulna, Bangladesh</div>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class="contact-form-box">
+      <h3>Send a Message</h3>
+      <div class="form-group">
+        <label>Your Name</label>
+        <input type="text" placeholder="John Doe">
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" placeholder="john@example.com">
+      </div>
+      <div class="form-group">
+        <label>Message</label>
+        <textarea rows="4" placeholder="Tell me about your project..."></textarea>
+      </div>
+      <button class="form-submit">Send Message →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Shahed Ahmed Omi</div>
+  <div class="footer-text">© 2026 · Flutter Developer · Khulna, Bangladesh</div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx}px, ${my}px) translate(-50%,-50%)`;
+  });
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%,-50%)`;
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      ring.style.width = '52px'; ring.style.height = '52px';
+      ring.style.borderColor = 'rgba(29,158,117,0.8)';
+    });
+    el.addEventListener('mouseleave', () => {
+      ring.style.width = '36px'; ring.style.height = '36px';
+      ring.style.borderColor = 'rgba(29,158,117,0.5)';
+    });
+  });
+
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.skill-card, .detail-item, .edu-body, .project-card, .contact-link').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease, border-color 0.2s';
+    observer.observe(el);
+  });
+
+  // Stat counter animation
+  document.querySelectorAll('.stat-num').forEach(el => {
+    const target = parseFloat(el.textContent);
+    const isFloat = el.textContent.includes('.');
+    const suffix = el.textContent.replace(/[0-9.]/g, '');
+    let start = 0;
+    const duration = 1500;
+    const step = timestamp => {
+      if (!start) start = timestamp;
+      const progress = Math.min((timestamp - start) / duration, 1);
+      const val = progress * target;
+      el.textContent = (isFloat ? val.toFixed(2) : Math.floor(val)) + suffix;
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    const io = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        requestAnimationFrame(step);
+        io.disconnect();
+      }
+    });
+    io.observe(el);
+  });
+</script>
+</body>
+</html>
